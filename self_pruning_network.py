@@ -13,14 +13,6 @@ import os
 
 
 class PrunableLinear(nn.Module):
-    """
-    A custom linear layer that learns which weights to prune via learnable
-    gate_scores. Gates are obtained by applying Sigmoid to gate_scores,
-    then multiplied element-wise with weights before the linear operation.
-
-    During training, the L1 sparsity loss on gates drives many gates toward 0,
-    effectively removing those weights from the network.
-    """
 
     def __init__(self, in_features: int, out_features: int):
         super().__init__()
@@ -42,7 +34,7 @@ class PrunableLinear(nn.Module):
         # Convert raw gate scores to [0, 1] using Sigmoid
         gates = torch.sigmoid(self.gate_scores)
 
-        # Element-wise multiply: this is differentiable w.r.t. both weight and gate_scores
+        # Element-wise multiply
         pruned_weights = self.weight * gates
 
         # Standard linear operation: x @ W^T + b
