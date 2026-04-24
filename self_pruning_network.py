@@ -1,15 +1,3 @@
-"""
-Self-Pruning Neural Network for CIFAR-10 Classification
-========================================================
-This script implements a feed-forward neural network with learnable gate parameters
-that allow the network to prune its own weights during training via L1 sparsity loss.
-
-Architecture:
-  - PrunableLinear: Custom linear layer with sigmoid-gated weights
-  - SelfPruningNet: Multi-layer network using PrunableLinear layers
-  - Training with Total Loss = CrossEntropy + lambda * L1(gates)
-"""
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -23,9 +11,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# ─────────────────────────────────────────────
-# Part 1: PrunableLinear Layer
-# ─────────────────────────────────────────────
 
 class PrunableLinear(nn.Module):
     """
@@ -73,10 +58,6 @@ class PrunableLinear(nn.Module):
         return torch.sigmoid(self.gate_scores).sum()
 
 
-# ─────────────────────────────────────────────
-# Network Definition
-# ─────────────────────────────────────────────
-
 class SelfPruningNet(nn.Module):
     """
     A 3-hidden-layer feed-forward network for CIFAR-10 (10-class classification).
@@ -122,10 +103,6 @@ class SelfPruningNet(nn.Module):
         pruned = (all_gates < threshold).sum().item()
         return 100.0 * pruned / all_gates.numel()
 
-
-# ─────────────────────────────────────────────
-# Part 3: Training & Evaluation
-# ─────────────────────────────────────────────
 
 def get_cifar10_loaders(batch_size: int = 256):
     """Download CIFAR-10 and return train/test DataLoaders with standard augmentation."""
@@ -309,7 +286,7 @@ def main():
 
     plot_comparison(results, "outputs/gates_comparison.png")
 
-    # ── Summary Table ──────────────────────────────────────
+    # Summary Table
     print("\n" + "="*55)
     print(f"{'λ':<12} {'Test Accuracy':>15} {'Sparsity Level':>16}")
     print("-"*55)
